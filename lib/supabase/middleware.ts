@@ -99,5 +99,13 @@ export async function updateSession(request: NextRequest) {
     return redirectResponse;
   }
 
+  if (user && request.nextUrl.pathname === '/') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/dashboard';
+    const redirectResponse = NextResponse.redirect(url);
+    copyAuthCookies(supabaseResponse, redirectResponse);
+    return redirectResponse;
+  }
+
   return supabaseResponse;
 }

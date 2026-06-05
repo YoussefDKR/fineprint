@@ -9,7 +9,11 @@ const navLinks = [
   { label: 'Examples', href: '#examples' },
 ];
 
-export default function LandingHeader() {
+type LandingHeaderProps = {
+  isLoggedIn?: boolean;
+};
+
+export default function LandingHeader({ isLoggedIn = false }: LandingHeaderProps) {
   return (
     <header className="nav-bar sticky top-0 z-50 bg-white/95 backdrop-blur-sm">
       <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 sm:px-10 lg:px-12">
@@ -30,12 +34,20 @@ export default function LandingHeader() {
         </nav>
 
         <nav className="flex items-center justify-end gap-5 justify-self-end sm:gap-6">
-          <ButtonText href="/login" className="text-[17px]">
-            Log in
-          </ButtonText>
-          <ButtonPrimary href="/login" className="px-6 py-3 text-[16px]">
-            Get started free
-          </ButtonPrimary>
+          {isLoggedIn ? (
+            <ButtonPrimary href="/dashboard" className="px-6 py-3 text-[16px]">
+              Go to dashboard
+            </ButtonPrimary>
+          ) : (
+            <>
+              <ButtonText href="/login" className="text-[17px]">
+                Log in
+              </ButtonText>
+              <ButtonPrimary href="/login" className="px-6 py-3 text-[16px]">
+                Get started free
+              </ButtonPrimary>
+            </>
+          )}
         </nav>
       </div>
     </header>

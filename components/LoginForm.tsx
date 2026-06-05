@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Logo from '@/components/ui/Logo';
 import { createClient } from '@/lib/supabase/client';
 import { ButtonPrimary } from '@/components/ui/Button';
@@ -11,7 +11,6 @@ const inputClass =
   'w-full rounded-xl border border-border bg-white px-4 py-3 text-[16px] text-gray-900 outline-none focus:border-brand';
 
 export default function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const isSignup = searchParams.get('mode') === 'signup';
   const redirect = searchParams.get('redirect') || '/dashboard';
@@ -63,18 +62,20 @@ export default function LoginForm() {
           return;
         }
 
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password: passwordValue,
+        const loginRes = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password: passwordValue }),
         });
 
-        if (signInError) {
-          setError(signInError.message);
+        const loginData = await loginRes.json();
+
+        if (!loginRes.ok) {
+          setError(loginData.error || 'Login failed');
           return;
         }
 
-        router.push(redirect);
-        router.refresh();
+        window.location.assign(redirect);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : 'Something went wrong. Please try again.',
