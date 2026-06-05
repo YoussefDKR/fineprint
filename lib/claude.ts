@@ -2,7 +2,11 @@ import type { ContractAnalysis } from '@/types';
 
 const SYSTEM_PROMPT = `You are a legal assistant specialized in freelance and agency contracts. Your job is to analyze contracts and help freelancers understand what they are agreeing to. You are a risk assessment and plain-language translation tool, NOT a lawyer. Always frame your analysis as "things to be aware of" not "legal advice." Respond ONLY with valid JSON. No text outside the JSON object.`;
 
-function buildUserPrompt(contractText: string): string {
+function buildUserPrompt(contractText: string, includeNegotiationEmail: boolean): string {
+  const emailField = includeNegotiationEmail
+    ? `\n  "negotiation_email": "polite firm email requesting changes to risky clauses, use [CLIENT NAME] and [YOUR NAME] as placeholders, 150-200 words"`
+    : '';
+
   return `Analyze this freelance/agency contract and return a JSON object with this exact structure:
 {
   "summary": "2-3 sentence plain-English overview of what this contract is about",
@@ -16,8 +20,7 @@ function buildUserPrompt(contractText: string): string {
       "reason": "why it's risky (empty string if low)",
       "suggestion": "what to ask for instead (empty string if low)"
     }
-  ],
-  "negotiation_email": "polite firm email requesting changes to risky clauses, use [CLIENT NAME] and [YOUR NAME] as placeholders, 150-200 words"
+  ]${emailField}
 }
 
 Flag as high risk: IP ownership transferred to client, net-60+ payment, unlimited revisions, broad indemnification, non-compete clauses.
@@ -28,7 +31,11 @@ Only include clauses that actually appear in the contract.
 CONTRACT TEXT: ${contractText}`;
 }
 
-export async function analyzeContract(contractText: string): Promise<ContractAnalysis> {
+export async function analyzeContract(
+  contractText: string,
+  options?: { includeNegotiationEmail?: boolean },
+): Promise<ContractAnalysis> {
+  const includeNegotiationEmail = options?.includeNegotiationEmail ?? true;
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     throw new Error('ANTHROPIC_API_KEY is not configured');
@@ -50,7 +57,7 @@ export async function analyzeContract(contractText: string): Promise<ContractAna
       messages: [
         {
           role: 'user',
-          content: buildUserPrompt(truncatedText),
+          content: buildUserPrompt(truncatedText, includeNegotiationEmail),
         },
       ],
     }),
@@ -74,5 +81,8 @@ export async function analyzeContract(contractText: string): Promise<ContractAna
   }
 
   const parsed = JSON.parse(jsonMatch[0]) as ContractAnalysis;
+  if (!includeNegotiationEmail) {
+    parsed.negotiation_email = '';
+  }
   return parsed;
 }

@@ -6,21 +6,27 @@ import UploadZone from '@/components/UploadZone';
 import RiskScore from '@/components/RiskScore';
 import ClauseCard from '@/components/ClauseCard';
 import NegotiationEmail from '@/components/NegotiationEmail';
+import NegotiationUpsell from '@/components/NegotiationUpsell';
 import { AnalysisDisclaimer, PageHeader } from '@/components/Layout';
 import { ButtonGhost, ButtonPrimary } from '@/components/ui/Button';
 import type { Contract } from '@/types';
 
-const LOADING_STEPS = [
+const LOADING_STEPS_BASE = [
   'Reading your contract…',
   'Identifying risky clauses…',
-  'Writing your negotiation email…',
 ];
+
+const LOADING_STEP_EMAIL = 'Writing your negotiation email…';
 
 type ReviewClientProps = {
   existingContract?: Contract | null;
+  hasNegotiationAccess: boolean;
 };
 
-export default function ReviewClient({ existingContract }: ReviewClientProps) {
+export default function ReviewClient({
+  existingContract,
+  hasNegotiationAccess,
+}: ReviewClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const contractIdParam = searchParams.get('id');
@@ -31,6 +37,10 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
   const [contract, setContract] = useState<Contract | null>(
     existingContract ?? null
   );
+
+  const loadingSteps = hasNegotiationAccess
+    ? [...LOADING_STEPS_BASE, LOADING_STEP_EMAIL]
+    : LOADING_STEPS_BASE;
 
   async function handleUpload(file: File) {
     setLoading(true);
@@ -55,7 +65,9 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
       setLoadingStep(1);
 
       await new Promise((r) => setTimeout(r, 600));
-      setLoadingStep(2);
+      if (hasNegotiationAccess) {
+        setLoadingStep(2);
+      }
 
       const analyzeRes = await fetch('/api/analyze', {
         method: 'POST',
@@ -99,10 +111,10 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
         <div className="card mx-auto max-w-lg p-12 text-center">
           <div className="mx-auto mb-5 h-10 w-10 animate-spin rounded-full border-2 border-border border-t-brand" />
           <p className="text-[17px] font-medium text-gray-900">
-            {LOADING_STEPS[loadingStep]}
+            {loadingSteps[loadingStep]}
           </p>
           <div className="mx-auto mt-5 flex max-w-xs justify-center gap-1.5">
-            {LOADING_STEPS.map((_, i) => (
+            {loadingSteps.map((_, i) => (
               <div
                 key={i}
                 className={`h-1.5 flex-1 rounded-full ${
@@ -152,8 +164,10 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
             </div>
           </div>
 
-          {contract.negotiation_email && (
+          {hasNegotiationAccess && contract.negotiation_email ? (
             <NegotiationEmail email={contract.negotiation_email} />
+          ) : (
+            !hasNegotiationAccess && <NegotiationUpsell />
           )}
 
           <AnalysisDisclaimer />

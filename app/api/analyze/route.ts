@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { analyzeContract } from '@/lib/claude';
+import { getUserPlan, hasNegotiationAccess } from '@/lib/plan';
 
 export async function POST(request: Request) {
   let contractId: string | undefined;
@@ -44,7 +45,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const analysis = await analyzeContract(extractedText);
+    const plan = getUserPlan(user);
+    const includeEmail = hasNegotiationAccess(plan);
+    const analysis = await analyzeContract(extractedText, {
+      includeNegotiationEmail: includeEmail,
+    });
 
     const { data: updated, error: updateError } = await supabase
       .from('contracts')
@@ -53,7 +58,7 @@ export async function POST(request: Request) {
         overall_risk: analysis.overall_risk,
         summary: analysis.summary,
         clauses: analysis.clauses,
-        negotiation_email: analysis.negotiation_email,
+        negotiation_email: includeEmail ? analysis.negotiation_email : null,
       })
       .eq('id', contractId)
       .select()

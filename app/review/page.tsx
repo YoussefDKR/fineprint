@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import { createClient } from '@/lib/supabase/server';
+import { getAppUser } from '@/lib/app-user';
 import ReviewClient from '@/components/ReviewClient';
-import { AppHeader, Footer } from '@/components/Layout';
+import AppShell from '@/components/AppShell';
 import type { Contract } from '@/types';
 
 type ReviewPageProps = {
@@ -10,6 +11,7 @@ type ReviewPageProps = {
 
 export default async function ReviewPage({ searchParams }: ReviewPageProps) {
   const { id } = searchParams;
+  const appUser = await getAppUser();
   let existingContract: Contract | null = null;
 
   if (id) {
@@ -26,14 +28,20 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <AppHeader />
-      <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-12 sm:px-10">
+    <AppShell
+      user={appUser!}
+      plan={appUser!.plan}
+      hasNegotiationAccess={appUser!.hasNegotiationAccess}
+      activeNav="contracts"
+    >
+      <main className="mx-auto w-full max-w-5xl px-6 py-8 sm:px-10">
         <Suspense fallback={<div className="text-[13px] text-muted">Loading…</div>}>
-          <ReviewClient existingContract={existingContract} />
+          <ReviewClient
+            existingContract={existingContract}
+            hasNegotiationAccess={appUser!.hasNegotiationAccess}
+          />
         </Suspense>
       </main>
-      <Footer />
-    </div>
+    </AppShell>
   );
 }

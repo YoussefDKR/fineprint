@@ -17,6 +17,9 @@ export async function updateSession(request: NextRequest) {
   if (!supabaseUrl || !supabaseAnonKey) {
     const isProtected =
       request.nextUrl.pathname.startsWith('/dashboard') ||
+      request.nextUrl.pathname.startsWith('/contracts') ||
+      request.nextUrl.pathname.startsWith('/negotiation') ||
+      request.nextUrl.pathname.startsWith('/billing') ||
       request.nextUrl.pathname.startsWith('/review') ||
       request.nextUrl.pathname.startsWith('/profile') ||
       request.nextUrl.pathname.startsWith('/api');
@@ -66,6 +69,9 @@ export async function updateSession(request: NextRequest) {
   const isAuthPage = request.nextUrl.pathname.startsWith('/login');
   const isProtected =
     request.nextUrl.pathname.startsWith('/dashboard') ||
+    request.nextUrl.pathname.startsWith('/contracts') ||
+    request.nextUrl.pathname.startsWith('/negotiation') ||
+    request.nextUrl.pathname.startsWith('/billing') ||
     request.nextUrl.pathname.startsWith('/review') ||
     request.nextUrl.pathname.startsWith('/profile');
 

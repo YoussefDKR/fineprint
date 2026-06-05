@@ -191,7 +191,7 @@ export default function HomePage() {
         </section>
 
         {/* Pricing */}
-        <section className="border-t border-border px-6 py-14">
+        <section id="pricing" className="border-t border-border px-6 py-14">
           <div className="mx-auto max-w-5xl">
             <h2 className="mb-6 text-center text-[24px] font-semibold text-gray-900">
               Pricing
