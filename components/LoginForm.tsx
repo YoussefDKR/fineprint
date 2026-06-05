@@ -1,65 +1,54 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useTransition } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
+import { signIn, signUp } from '@/app/login/actions';
 
 export default function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const isSignup = searchParams.get('mode') === 'signup';
   const redirect = searchParams.get('redirect') || '/dashboard';
   const configError = searchParams.get('error') === 'config';
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [mode, setMode] = useState<'login' | 'signup'>(isSignup ? 'signup' : 'login');
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
     setError(null);
     setMessage(null);
 
-    const supabase = createClient();
+    const formData = new FormData(e.currentTarget);
+    formData.set('redirect', redirect);
 
-    if (mode === 'signup') {
-      const { error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
-        },
-      });
-
-      if (signUpError) {
-        setError(signUpError.message);
-        setLoading(false);
-        return;
+    startTransition(async () => {
+      try {
+        if (mode === 'signup') {
+          const result = await signUp(formData);
+          if (result?.error) {
+            setError(result.error);
+          } else if (result?.message) {
+            setMessage(result.message);
+          }
+        } else {
+          const result = await signIn(formData);
+          if (result?.error) {
+            setError(result.error);
+          }
+        }
+      } catch (err) {
+        // redirect() throws — expected on successful login
+        if (err instanceof Error && err.message.includes('NEXT_REDIRECT')) {
+          return;
+        }
+        setError(
+          err instanceof Error ? err.message : 'Something went wrong. Please try again.'
+        );
       }
-
-      setMessage('Check your email to confirm your account, or log in if confirmation is disabled.');
-      setLoading(false);
-      return;
-    }
-
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
     });
-
-    if (signInError) {
-      setError(signInError.message);
-      setLoading(false);
-      return;
-    }
-
-    router.push(redirect);
-    router.refresh();
   }
 
   return (
@@ -88,10 +77,9 @@ export default function LoginForm() {
           </label>
           <input
             id="email"
+            name="email"
             type="email"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 outline-none focus:border-navy focus:ring-1 focus:ring-navy"
             placeholder="you@example.com"
           />
@@ -103,11 +91,10 @@ export default function LoginForm() {
           </label>
           <input
             id="password"
+            name="password"
             type="password"
             required
             minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 outline-none focus:border-navy focus:ring-1 focus:ring-navy"
             placeholder="••••••••"
           />
@@ -129,10 +116,10 @@ export default function LoginForm() {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={isPending}
           className="w-full rounded-lg bg-navy py-2.5 text-sm font-medium text-white hover:bg-navy/90 disabled:opacity-50"
         >
-          {loading
+          {isPending
             ? 'Please wait…'
             : mode === 'login'
               ? 'Log in'

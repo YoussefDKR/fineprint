@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import { signOut } from '@/app/login/actions';
 import UploadZone from '@/components/UploadZone';
 import RiskScore from '@/components/RiskScore';
 import ClauseCard from '@/components/ClauseCard';
@@ -31,6 +31,7 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
   const [contract, setContract] = useState<Contract | null>(
     existingContract ?? null
   );
+  const [isSigningOut, startSignOut] = useTransition();
 
   async function handleUpload(file: File) {
     setLoading(true);
@@ -82,10 +83,10 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
     }
   }
 
-  async function handleSignOut() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push('/login');
+  function handleSignOut() {
+    startSignOut(async () => {
+      await signOut();
+    });
   }
 
   const showResults =
@@ -104,9 +105,10 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
         </div>
         <button
           onClick={handleSignOut}
-          className="text-sm text-gray-500 hover:text-gray-700"
+          disabled={isSigningOut}
+          className="text-sm text-gray-500 hover:text-gray-700 disabled:opacity-50"
         >
-          Sign out
+          {isSigningOut ? 'Signing out…' : 'Sign out'}
         </button>
       </div>
 

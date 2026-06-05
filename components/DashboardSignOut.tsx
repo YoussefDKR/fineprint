@@ -1,24 +1,24 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import { useTransition } from 'react';
+import { signOut } from '@/app/login/actions';
 
 export default function DashboardSignOut() {
-  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  async function handleSignOut() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push('/login');
-    router.refresh();
+  function handleSignOut() {
+    startTransition(async () => {
+      await signOut();
+    });
   }
 
   return (
     <button
       onClick={handleSignOut}
-      className="text-sm text-gray-500 hover:text-gray-700"
+      disabled={isPending}
+      className="text-sm text-gray-500 hover:text-gray-700 disabled:opacity-50"
     >
-      Sign out
+      {isPending ? 'Signing out…' : 'Sign out'}
     </button>
   );
 }
