@@ -1,12 +1,10 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { supabaseCookieOptions } from '@/lib/supabase/cookie-options';
 
-function applyCookies(
-  target: NextResponse,
-  source: NextResponse
-) {
-  source.cookies.getAll().forEach(({ name, value, ...options }) => {
-    target.cookies.set(name, value, options);
+function copyAuthCookies(from: NextResponse, to: NextResponse) {
+  from.cookies.getAll().forEach(({ name, value }) => {
+    to.cookies.set(name, value, supabaseCookieOptions);
   });
 }
 
@@ -37,31 +35,40 @@ export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookieOptions: supabaseCookieOptions,
     cookies: {
       getAll() {
         return request.cookies.getAll();
       },
-      setAll(
-        cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[],
-        headers?: Record<string, string>
-      ) {
-        cookiesToSet.forEach(({ name, value }) =>
-          request.cookies.set(name, value)
-        );
+      setAll(cookiesToSet, headers) {
+        cookiesToSet.forEach(({ name, value }) => {
+          request.cookies.set(name, value);
+        });
+
         supabaseResponse = NextResponse.next({ request });
-        cookiesToSet.forEach(({ name, value, options }) =>
-          supabaseResponse.cookies.set(name, value, options)
-        );
+
+        cookiesToSet.forEach(({ name, value, options }) => {
+          supabaseResponse.cookies.set(name, value, {
+            ...supabaseCookieOptions,
+            ...options,
+          });
+        });
+
         if (headers) {
-          Object.entries(headers).forEach(([key, value]) =>
-            supabaseResponse.headers.set(key, value)
+          Object.entries(headers).forEach(([key, value]) => {
+            supabaseResponse.headers.set(key, value);
+          });
+        } else {
+          supabaseResponse.headers.set(
+            'Cache-Control',
+            'private, no-store, no-cache, must-revalidate',
           );
         }
       },
     },
   });
 
-  // Refreshes the session if expired — required for persistent login
+  // Do not run code between createServerClient and getUser().
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -80,7 +87,7 @@ export async function updateSession(request: NextRequest) {
     url.pathname = '/login';
     url.searchParams.set('redirect', request.nextUrl.pathname);
     const redirectResponse = NextResponse.redirect(url);
-    applyCookies(redirectResponse, supabaseResponse);
+    copyAuthCookies(supabaseResponse, redirectResponse);
     return redirectResponse;
   }
 
@@ -88,7 +95,7 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = '/dashboard';
     const redirectResponse = NextResponse.redirect(url);
-    applyCookies(redirectResponse, supabaseResponse);
+    copyAuthCookies(supabaseResponse, redirectResponse);
     return redirectResponse;
   }
 

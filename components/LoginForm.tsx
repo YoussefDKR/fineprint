@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Logo from '@/components/ui/Logo';
-import { signIn, signUp } from '@/app/login/actions';
+import { createClient } from '@/lib/supabase/client';
 import { ButtonPrimary } from '@/components/ui/Button';
 import { getPasswordStrength } from '@/lib/profile';
 
@@ -11,6 +11,7 @@ const inputClass =
   'w-full rounded-xl border border-border bg-white px-4 py-3 text-[16px] text-gray-900 outline-none focus:border-brand';
 
 export default function LoginForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const isSignup = searchParams.get('mode') === 'signup';
   const redirect = searchParams.get('redirect') || '/dashboard';
@@ -30,22 +31,53 @@ export default function LoginForm() {
     setMessage(null);
 
     const formData = new FormData(e.currentTarget);
-    formData.set('redirect', redirect);
+    const email = formData.get('email') as string;
+    const passwordValue = formData.get('password') as string;
+    const fullName = (formData.get('fullName') as string)?.trim();
 
     startTransition(async () => {
       try {
+        const supabase = createClient();
+
         if (mode === 'signup') {
-          const result = await signUp(formData);
-          if (result?.error) setError(result.error);
-          else if (result?.message) setMessage(result.message);
-        } else {
-          const result = await signIn(formData);
-          if (result?.error) setError(result.error);
+          const appUrl = window.location.origin;
+          const { error: signUpError } = await supabase.auth.signUp({
+            email,
+            password: passwordValue,
+            options: {
+              emailRedirectTo: `${appUrl}/auth/callback?next=/dashboard`,
+              data: fullName
+                ? { full_name: fullName, display_name: fullName }
+                : undefined,
+            },
+          });
+
+          if (signUpError) {
+            setError(signUpError.message);
+            return;
+          }
+
+          setMessage(
+            'Check your email to confirm your account, or log in if confirmation is disabled.',
+          );
+          return;
         }
+
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password: passwordValue,
+        });
+
+        if (signInError) {
+          setError(signInError.message);
+          return;
+        }
+
+        router.push(redirect);
+        router.refresh();
       } catch (err) {
-        if (err instanceof Error && err.message.includes('NEXT_REDIRECT')) return;
         setError(
-          err instanceof Error ? err.message : 'Something went wrong. Please try again.'
+          err instanceof Error ? err.message : 'Something went wrong. Please try again.',
         );
       }
     });

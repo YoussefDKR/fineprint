@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { supabaseCookieOptions } from '@/lib/supabase/cookie-options';
 
 export async function createClient() {
   const cookieStore = await cookies();
@@ -8,26 +9,24 @@ export async function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      cookieOptions: supabaseCookieOptions,
       cookies: {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(
-          cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[],
-          headers?: Record<string, string>
-        ) {
+        setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, {
+                ...supabaseCookieOptions,
+                ...options,
+              }),
             );
           } catch {
-            // setAll from Server Component — safe to ignore
-          }
-          if (headers) {
-            // Cache headers handled by middleware on subsequent requests
+            // setAll from Server Component — safe to ignore; middleware refreshes sessions
           }
         },
       },
-    }
+    },
   );
 }
