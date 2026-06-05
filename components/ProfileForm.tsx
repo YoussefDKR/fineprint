@@ -214,8 +214,11 @@ export default function ProfileForm({ profile }: ProfileFormProps) {
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-border">
                   <div
-                    className={`h-full rounded-full transition-all ${strength.color}`}
-                    style={{ width: `${strength.score}%` }}
+                    className="h-full rounded-full transition-all"
+                    style={{
+                      width: `${strength.score}%`,
+                      backgroundColor: strength.barColor,
+                    }}
                   />
                 </div>
               </div>

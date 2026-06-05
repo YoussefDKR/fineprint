@@ -8,10 +8,10 @@ export type UserProfile = {
 export function getPasswordStrength(password: string): {
   score: number;
   label: string;
-  color: string;
+  barColor: string;
 } {
   if (!password) {
-    return { score: 0, label: '', color: 'bg-border' };
+    return { score: 0, label: '', barColor: '#e8e8e6' };
   }
 
   let score = 0;
@@ -21,8 +21,8 @@ export function getPasswordStrength(password: string): {
   if (/\d/.test(password)) score += 1;
   if (/[^A-Za-z0-9]/.test(password)) score += 1;
 
-  if (score <= 2) return { score: 25, label: 'Weak', color: 'bg-[#E24B4A]' };
-  if (score === 3) return { score: 50, label: 'Fair', color: 'bg-[#EF9F27]' };
-  if (score === 4) return { score: 75, label: 'Good', color: 'bg-[#639922]' };
-  return { score: 100, label: 'Strong', color: 'bg-brand' };
+  if (score <= 2) return { score: 25, label: 'Weak', barColor: '#E24B4A' };
+  if (score === 3) return { score: 50, label: 'Fair', barColor: '#EF9F27' };
+  if (score === 4) return { score: 75, label: 'Good', barColor: '#639922' };
+  return { score: 100, label: 'Strong', barColor: '#166534' };
 }
