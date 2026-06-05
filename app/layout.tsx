@@ -4,7 +4,9 @@ import './globals.css';
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-dm-sans',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -19,8 +21,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${dmSans.variable} font-sans`}>{children}</body>
+    <html lang="en" className={dmSans.variable}>
+      <body className={`${dmSans.className} bg-canvas text-gray-900 antialiased`}>
+        {children}
+      </body>
     </html>
   );
 }

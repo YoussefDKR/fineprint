@@ -1,31 +1,9 @@
 import type { Clause } from '@/types';
+import { riskStyles } from '@/lib/risk-styles';
+import RiskScore from './RiskScore';
 
 type ClauseCardProps = {
   clause: Clause;
-};
-
-const riskStyles = {
-  high: {
-    border: 'border-l-risk-high',
-    badge: 'bg-red-50 text-risk-high',
-    dot: 'bg-risk-high',
-  },
-  medium: {
-    border: 'border-l-risk-medium',
-    badge: 'bg-amber-50 text-risk-medium',
-    dot: 'bg-risk-medium',
-  },
-  low: {
-    border: 'border-l-risk-low',
-    badge: 'bg-green-50 text-risk-low',
-    dot: 'bg-risk-low',
-  },
-};
-
-const riskLabels = {
-  high: 'High',
-  medium: 'Medium',
-  low: 'Low',
 };
 
 export default function ClauseCard({ clause }: ClauseCardProps) {
@@ -33,43 +11,68 @@ export default function ClauseCard({ clause }: ClauseCardProps) {
 
   return (
     <article
-      className={`rounded-xl border border-gray-200 border-l-4 bg-white p-6 shadow-sm ${styles.border}`}
+      className={`card overflow-hidden border-l-[3px] rounded-l-none ${styles.border}`}
     >
-      <div className="mb-4 flex items-start justify-between gap-4">
-        <h3 className="text-lg font-semibold text-gray-900">{clause.title}</h3>
-        <span
-          className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${styles.badge}`}
-        >
-          <span className={`h-2 w-2 rounded-full ${styles.dot}`} />
-          {riskLabels[clause.risk]} risk
-        </span>
+      <div className="p-6">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${styles.dot}`} />
+            <h3 className="text-[16px] font-medium text-gray-900">
+              {clause.title}
+            </h3>
+          </div>
+          <RiskScore risk={clause.risk} size="sm" />
+        </div>
+
+        {clause.original_text && (
+          <p className="mb-2 text-[14px] italic text-muted">
+            &ldquo;{clause.original_text}&rdquo;
+          </p>
+        )}
+
+        <p className="text-[16px] leading-relaxed text-muted">
+          {clause.plain_english}
+        </p>
+
+        {clause.risk !== 'low' && clause.reason && (
+          <div
+            className={`mt-4 rounded-lg px-4 py-3 text-[15px] ${styles.reasonBg} ${styles.reasonText}`}
+          >
+            {clause.reason}
+          </div>
+        )}
+
+        {clause.risk !== 'low' && clause.suggestion && (
+          <div className="mt-3 rounded-lg bg-[#EAF3DE] px-4 py-3 text-[15px] text-[#3B6D11]">
+            {clause.suggestion}
+          </div>
+        )}
       </div>
+    </article>
+  );
+}
 
-      {clause.original_text && (
-        <blockquote className="mb-4 border-l-2 border-gray-200 pl-4 text-sm italic text-gray-500">
-          &ldquo;{clause.original_text}&rdquo;
-        </blockquote>
-      )}
-
-      <p className="mb-4 text-gray-800 leading-relaxed">{clause.plain_english}</p>
-
-      {clause.risk !== 'low' && clause.reason && (
-        <div className="mb-3 rounded-lg bg-gray-50 p-4">
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
-            Why it matters
-          </p>
-          <p className="text-sm text-gray-700">{clause.reason}</p>
+export function ClauseCardPreview() {
+  return (
+    <article className="card overflow-hidden border-l-[3px] rounded-l-none border-l-[#E24B4A]">
+      <div className="p-6">
+        <div className="mb-3 flex items-center gap-2.5">
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#E24B4A]" />
+          <h3 className="text-[16px] font-medium text-gray-900">
+            Intellectual property ownership
+          </h3>
         </div>
-      )}
-
-      {clause.risk !== 'low' && clause.suggestion && (
-        <div className="rounded-lg bg-navy/5 p-4">
-          <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-navy">
-            Suggested ask
-          </p>
-          <p className="text-sm text-gray-700">{clause.suggestion}</p>
+        <p className="text-[16px] leading-relaxed text-muted">
+          All work you create becomes the client&apos;s property immediately. You
+          can&apos;t even show it in your portfolio.
+        </p>
+        <div className="mt-4 rounded-lg bg-[#FCEBEB] px-4 py-3 text-[15px] text-[#A32D2D]">
+          High risk — you lose all rights to your own work
         </div>
-      )}
+        <div className="mt-3 rounded-lg bg-[#EAF3DE] px-4 py-3 text-[15px] text-[#3B6D11]">
+          Ask to retain portfolio rights while client keeps commercial rights
+        </div>
+      </div>
     </article>
   );
 }

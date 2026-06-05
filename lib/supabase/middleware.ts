@@ -18,6 +18,7 @@ export async function updateSession(request: NextRequest) {
     const isProtected =
       request.nextUrl.pathname.startsWith('/dashboard') ||
       request.nextUrl.pathname.startsWith('/review') ||
+      request.nextUrl.pathname.startsWith('/profile') ||
       request.nextUrl.pathname.startsWith('/api');
 
     if (isProtected) {
@@ -65,7 +66,8 @@ export async function updateSession(request: NextRequest) {
   const isAuthPage = request.nextUrl.pathname.startsWith('/login');
   const isProtected =
     request.nextUrl.pathname.startsWith('/dashboard') ||
-    request.nextUrl.pathname.startsWith('/review');
+    request.nextUrl.pathname.startsWith('/review') ||
+    request.nextUrl.pathname.startsWith('/profile');
 
   if (!user && isProtected) {
     const url = request.nextUrl.clone();

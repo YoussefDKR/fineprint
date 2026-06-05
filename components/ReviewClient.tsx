@@ -2,12 +2,12 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { signOut } from '@/app/login/actions';
 import UploadZone from '@/components/UploadZone';
 import RiskScore from '@/components/RiskScore';
 import ClauseCard from '@/components/ClauseCard';
 import NegotiationEmail from '@/components/NegotiationEmail';
-import { AnalysisDisclaimer } from '@/components/Layout';
+import { AnalysisDisclaimer, PageHeader } from '@/components/Layout';
+import { ButtonGhost, ButtonPrimary } from '@/components/ui/Button';
 import type { Contract } from '@/types';
 
 const LOADING_STEPS = [
@@ -31,7 +31,6 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
   const [contract, setContract] = useState<Contract | null>(
     existingContract ?? null
   );
-  const [isSigningOut, startSignOut] = useTransition();
 
   async function handleUpload(file: File) {
     setLoading(true);
@@ -42,7 +41,6 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
       const formData = new FormData();
       formData.append('file', file);
 
-      setLoadingStep(0);
       const uploadRes = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
@@ -83,51 +81,32 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
     }
   }
 
-  function handleSignOut() {
-    startSignOut(async () => {
-      await signOut();
-    });
-  }
-
   const showResults =
     contract?.status === 'analyzed' && contract.summary && contract.clauses;
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Review contract
-          </h1>
-          <p className="mt-1 text-gray-500">
-            Upload a client contract PDF for instant analysis
-          </p>
-        </div>
-        <button
-          onClick={handleSignOut}
-          disabled={isSigningOut}
-          className="text-sm text-gray-500 hover:text-gray-700 disabled:opacity-50"
-        >
-          {isSigningOut ? 'Signing out…' : 'Sign out'}
-        </button>
-      </div>
+      <PageHeader
+        title="Review contract"
+        subtitle="Upload a client contract PDF for instant analysis"
+      />
 
       {!showResults && !loading && (
         <UploadZone onUpload={handleUpload} disabled={loading} />
       )}
 
       {loading && (
-        <div className="rounded-xl border border-gray-200 bg-white p-12 text-center">
-          <div className="mx-auto mb-6 h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-navy" />
-          <p className="text-lg font-medium text-gray-900">
+        <div className="card mx-auto max-w-lg p-12 text-center">
+          <div className="mx-auto mb-5 h-10 w-10 animate-spin rounded-full border-2 border-border border-t-brand" />
+          <p className="text-[17px] font-medium text-gray-900">
             {LOADING_STEPS[loadingStep]}
           </p>
-          <div className="mx-auto mt-6 flex max-w-xs justify-center gap-2">
+          <div className="mx-auto mt-5 flex max-w-xs justify-center gap-1.5">
             {LOADING_STEPS.map((_, i) => (
               <div
                 key={i}
                 className={`h-1.5 flex-1 rounded-full ${
-                  i <= loadingStep ? 'bg-navy' : 'bg-gray-200'
+                  i <= loadingStep ? 'bg-brand' : 'bg-border'
                 }`}
               />
             ))}
@@ -136,11 +115,11 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
       )}
 
       {error && (
-        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="card mt-4 border-[#E24B4A] bg-[#FCEBEB] p-5 text-[15px] text-[#A32D2D]">
           {error}
           <button
             onClick={() => setError(null)}
-            className="ml-4 font-medium underline"
+            className="ml-3 font-medium underline"
           >
             Try again
           </button>
@@ -148,20 +127,22 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
       )}
 
       {showResults && (
-        <div className="space-y-8">
+        <div className="space-y-6">
           {contract.overall_risk && (
             <RiskScore risk={contract.overall_risk} />
           )}
 
-          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-3 text-lg font-semibold text-gray-900">
+          <div className="card p-6">
+            <h2 className="mb-3 text-[18px] font-semibold text-gray-900">
               Summary
             </h2>
-            <p className="leading-relaxed text-gray-700">{contract.summary}</p>
+            <p className="text-[16px] leading-relaxed text-muted">
+              {contract.summary}
+            </p>
           </div>
 
           <div>
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            <h2 className="mb-4 text-[18px] font-semibold text-gray-900">
               Clause breakdown
             </h2>
             <div className="space-y-4">
@@ -177,17 +158,15 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
 
           <AnalysisDisclaimer />
 
-          <div className="flex gap-4">
-            <button
-              onClick={() => {
-                setContract(null);
-                router.push('/review');
-              }}
-              className="rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-navy hover:text-navy"
-            >
-              Review another contract
-            </button>
-          </div>
+          <ButtonGhost
+            onClick={() => {
+              setContract(null);
+              router.push('/review');
+            }}
+            className="text-[15px]"
+          >
+            Review another contract
+          </ButtonGhost>
         </div>
       )}
 
@@ -195,20 +174,21 @@ export default function ReviewClient({ existingContract }: ReviewClientProps) {
         contract?.status === 'pending' &&
         !loading &&
         !showResults && (
-          <div className="rounded-xl border border-gray-200 bg-white p-12 text-center">
-            <p className="text-gray-500">This contract is still being analyzed…</p>
+          <div className="card p-12 text-center">
+            <p className="text-[16px] text-muted">
+              This contract is still being analyzed…
+            </p>
           </div>
         )}
 
       {contract?.status === 'error' && !loading && (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center">
-          <p className="mb-4 text-red-700">Analysis failed for this contract.</p>
-          <button
-            onClick={() => router.push('/review')}
-            className="rounded-lg bg-navy px-5 py-2.5 text-sm font-medium text-white"
-          >
+        <div className="card p-10 text-center">
+          <p className="mb-5 text-[16px] text-[#A32D2D]">
+            Analysis failed for this contract.
+          </p>
+          <ButtonPrimary onClick={() => router.push('/review')}>
             Try a new upload
-          </button>
+          </ButtonPrimary>
         </div>
       )}
     </div>

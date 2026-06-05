@@ -28,8 +28,8 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
   return (
     <div className="flex min-h-screen flex-col">
       <AppHeader />
-      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-10">
-        <Suspense fallback={<div className="text-gray-500">Loading…</div>}>
+      <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-12 sm:px-10">
+        <Suspense fallback={<div className="text-[13px] text-muted">Loading…</div>}>
           <ReviewClient existingContract={existingContract} />
         </Suspense>
       </main>

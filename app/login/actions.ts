@@ -22,6 +22,7 @@ export async function signIn(formData: FormData) {
 export async function signUp(formData: FormData) {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
+  const fullName = (formData.get('fullName') as string)?.trim();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3002';
 
   const supabase = await createClient();
@@ -31,6 +32,7 @@ export async function signUp(formData: FormData) {
     password,
     options: {
       emailRedirectTo: `${appUrl}/auth/callback?next=/dashboard`,
+      data: fullName ? { full_name: fullName, display_name: fullName } : undefined,
     },
   });
 

@@ -9,17 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        navy: '#1e3a5f',
-        forest: '#166534',
-        risk: {
-          high: '#DC2626',
-          medium: '#D97706',
-          low: '#16A34A',
+        canvas: '#f8f8f6',
+        brand: {
+          DEFAULT: '#166534',
+          hover: '#14532d',
         },
-        surface: '#f8f9fa',
+        border: '#e8e8e6',
+        muted: '#6b7280',
+        placeholder: '#2563eb',
       },
       fontFamily: {
         sans: ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        card: '12px',
       },
     },
   },
