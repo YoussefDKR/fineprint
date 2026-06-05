@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     if (uploadError) {
       console.error('Avatar upload error:', uploadError);
       return NextResponse.json(
-        { error: 'Failed to upload photo. Create an avatars bucket in Supabase.' },
+        { error: 'Failed to upload photo. Please try again later.' },
         { status: 500 }
       );
     }

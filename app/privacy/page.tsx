@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { LegalDocument, LegalSection } from '@/components/LegalDocument';
 
 export const metadata: Metadata = {
@@ -50,25 +51,12 @@ export default function PrivacyPage() {
         </p>
       </LegalSection>
 
-      <LegalSection heading="Third-party services">
-        <p>We rely on trusted providers to operate Fineprint:</p>
-        <ul className="list-disc space-y-2 pl-5">
-          <li>
-            <strong className="text-gray-900">Supabase</strong> — authentication,
-            database, and file storage
-          </li>
-          <li>
-            <strong className="text-gray-900">Anthropic</strong> — AI analysis of
-            contract text you submit
-          </li>
-          <li>
-            <strong className="text-gray-900">Vercel</strong> — hosting and
-            delivery of the application
-          </li>
-        </ul>
+      <LegalSection heading="Service providers">
         <p>
-          These providers process data on our behalf under their own privacy and
-          security terms.
+          We use trusted third-party providers for hosting, authentication, storage,
+          and processing needed to run Fineprint. They may handle your data only as
+          needed to provide those services on our behalf, under contractual
+          obligations to protect it.
         </p>
       </LegalSection>
 
@@ -93,8 +81,8 @@ export default function PrivacyPage() {
         <p>
           Depending on where you live, you may have the right to access, correct,
           delete, or export your personal data, or to object to certain processing.
-          To exercise these rights, contact us at{' '}
-          <a href="mailto:mr.youssefdaakir@gmail.com">mr.youssefdaakir@gmail.com</a>.
+          To exercise these rights, use our{' '}
+          <Link href="/contact">contact form</Link>.
         </p>
       </LegalSection>
 
@@ -114,8 +102,8 @@ export default function PrivacyPage() {
 
       <LegalSection heading="Contact">
         <p>
-          Questions about this policy? Email{' '}
-          <a href="mailto:mr.youssefdaakir@gmail.com">mr.youssefdaakir@gmail.com</a>.
+          Questions about this policy? Use our{' '}
+          <Link href="/contact">contact form</Link>.
         </p>
       </LegalSection>
     </LegalDocument>

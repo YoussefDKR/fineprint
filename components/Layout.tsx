@@ -22,12 +22,9 @@ export function Footer({ variant = 'app' }: { variant?: 'landing' | 'app' }) {
               <Link href="/terms" className="hover:text-gray-900">
                 Terms
               </Link>
-              <a
-                href="mailto:mr.youssefdaakir@gmail.com"
-                className="hover:text-gray-900"
-              >
+              <Link href="/contact" className="hover:text-gray-900">
                 Contact
-              </a>
+              </Link>
             </div>
           </div>
           <p className="text-[15px] text-muted">
@@ -54,6 +51,10 @@ export function Footer({ variant = 'app' }: { variant?: 'landing' | 'app' }) {
           <span className="mx-3">·</span>
           <Link href="/terms" className="hover:text-gray-900">
             Terms
+          </Link>
+          <span className="mx-3">·</span>
+          <Link href="/contact" className="hover:text-gray-900">
+            Contact
           </Link>
         </p>
       </div>

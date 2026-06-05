@@ -134,8 +134,7 @@ export default function LoginForm() {
 
         {configError && (
           <p className="mb-4 rounded-xl bg-[#FAEEDA] p-4 text-[15px] text-[#854F0B]">
-            Supabase is not configured yet. Add your API keys to{' '}
-            <code className="rounded bg-white/60 px-1">.env.local</code> and restart the dev server.
+            Sign-in is temporarily unavailable. Please try again later.
           </p>
         )}
         {error && (

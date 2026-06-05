@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { LegalDocument, LegalSection } from '@/components/LegalDocument';
 
 export const metadata: Metadata = {
@@ -140,8 +141,8 @@ export default function TermsPage() {
 
       <LegalSection heading="Contact">
         <p>
-          Questions about these Terms? Email{' '}
-          <a href="mailto:mr.youssefdaakir@gmail.com">mr.youssefdaakir@gmail.com</a>.
+          Questions about these Terms? Use our{' '}
+          <Link href="/contact">contact form</Link>.
         </p>
       </LegalSection>
     </LegalDocument>
