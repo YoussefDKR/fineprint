@@ -13,6 +13,7 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
     <AppShell
       user={appUser!}
       plan={appUser!.plan}
+      creditBalance={appUser!.creditBalance}
       hasNegotiationAccess={appUser!.hasNegotiationAccess}
       activeNav="billing"
     >
@@ -26,7 +27,7 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
           Checkout canceled. No charge was made.
         </div>
       )}
-      <BillingView currentPlan={appUser!.plan} />
+      <BillingView currentPlan={appUser!.plan} creditBalance={appUser!.creditBalance} />
     </AppShell>
   );
 }

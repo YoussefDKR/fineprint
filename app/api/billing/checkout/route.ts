@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import type { ProductId } from '@/lib/plans';
 
-const PLAN_PRICES: Record<string, { envKey: string; mode: 'payment' | 'subscription' }> = {
+const PRODUCT_PRICES: Record<
+  ProductId,
+  { envKey: string; mode: 'payment' | 'subscription' }
+> = {
+  single: { envKey: 'STRIPE_PRICE_SINGLE', mode: 'payment' },
   credits: { envKey: 'STRIPE_PRICE_CREDITS', mode: 'payment' },
   pro: { envKey: 'STRIPE_PRICE_PRO', mode: 'subscription' },
 };
@@ -37,11 +42,11 @@ export async function POST(request: Request) {
   const plan =
     typeof body === 'object' && body !== null && 'plan' in body ? body.plan : null;
 
-  if (plan !== 'credits' && plan !== 'pro') {
+  if (plan !== 'single' && plan !== 'credits' && plan !== 'pro') {
     return NextResponse.json({ error: 'Invalid plan.' }, { status: 400 });
   }
 
-  const priceConfig = PLAN_PRICES[plan];
+  const priceConfig = PRODUCT_PRICES[plan];
   const priceId = process.env[priceConfig.envKey];
   if (!priceId) {
     return NextResponse.json(
@@ -62,6 +67,11 @@ export async function POST(request: Request) {
     'metadata[user_id]': user.id,
     'metadata[plan]': plan,
   });
+
+  if (plan === 'pro') {
+    params.set('subscription_data[metadata][user_id]', user.id);
+    params.set('subscription_data[metadata][plan]', 'pro');
+  }
 
   const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'POST',

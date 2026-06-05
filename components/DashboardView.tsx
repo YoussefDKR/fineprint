@@ -95,7 +95,7 @@ export default function DashboardView({
           sub={
             hasNegotiationAccess
               ? monthOverMonthLabel(contracts, (c) => Boolean(c.negotiation_email))
-              : 'Upgrade to unlock'
+              : 'Buy reviews to unlock'
           }
         />
       </div>

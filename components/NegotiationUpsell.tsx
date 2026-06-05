@@ -15,10 +15,10 @@ export default function NegotiationUpsell({ compact = false }: { compact?: boole
         </div>
         <div className="flex-1">
           <h3 className="text-[16px] font-semibold text-gray-900">
-            Negotiation emails — paid plans only
+            Negotiation emails — included with paid reviews
           </h3>
           <p className="mt-1 text-[14px] leading-relaxed text-muted">
-            Upgrade to Credits or Pro to generate polished emails you can send to
+            Upgrade to buy reviews or Pro to generate polished emails you can send to
             clients requesting contract changes.
           </p>
           <ButtonPrimary href="/billing" className="mt-4 px-5 py-2.5 text-[14px]">

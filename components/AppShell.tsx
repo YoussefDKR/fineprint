@@ -21,6 +21,7 @@ type AppShellProps = {
     avatarUrl: string | null;
   };
   plan: UserPlan;
+  creditBalance: number;
   hasNegotiationAccess: boolean;
   activeNav: AppNavId;
 };
@@ -73,14 +74,15 @@ export default function AppShell({
   children,
   user,
   plan,
+  creditBalance,
   hasNegotiationAccess,
   activeNav,
 }: AppShellProps) {
   const initials = user.fullName.slice(0, 2).toUpperCase();
 
   return (
-    <div className="flex min-h-screen bg-canvas">
-      <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-white">
+    <div className="flex h-screen overflow-hidden bg-canvas">
+      <aside className="flex h-full w-64 shrink-0 flex-col border-r border-border bg-white">
         <div className="border-b border-border px-5 py-5">
           <Logo href="/dashboard" size="nav" />
         </div>
@@ -114,18 +116,31 @@ export default function AppShell({
         <div className="space-y-4 border-t border-border p-4">
           <div className="rounded-xl border border-brand/30 bg-[#EAF3DE]/40 p-4">
             <p className="text-[14px] font-semibold text-gray-900">{planLabel(plan)}</p>
-            <p className="mt-0.5 text-[13px] text-muted">{planDescription(plan)}</p>
+            <p className="mt-0.5 text-[13px] text-muted">
+              {plan === 'pro'
+                ? planDescription(plan)
+                : plan === 'credits'
+                  ? `${creditBalance} review${creditBalance === 1 ? '' : 's'} left`
+                  : planDescription(plan)}
+            </p>
             {plan === 'free' && (
               <Link
                 href="/billing"
                 className="mt-3 inline-block text-[13px] font-medium text-brand hover:underline"
               >
-                Upgrade plan →
+                Buy reviews →
               </Link>
             )}
           </div>
 
-          <div className="flex items-center gap-3 px-1">
+          <Link
+            href="/profile"
+            className={`flex items-center gap-3 rounded-xl border px-3 py-3 transition-colors ${
+              activeNav === 'account'
+                ? 'border-brand/40 bg-[#EAF3DE]/40'
+                : 'border-border bg-white hover:border-gray-300 hover:bg-canvas'
+            }`}
+          >
             {user.avatarUrl ? (
               <Image
                 src={user.avatarUrl}
@@ -135,7 +150,7 @@ export default function AppShell({
                 className="h-9 w-9 rounded-full object-cover"
               />
             ) : (
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#EAF3DE] text-[13px] font-semibold text-brand">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#EAF3DE] text-[13px] font-semibold text-brand">
                 {initials}
               </div>
             )}
@@ -143,13 +158,13 @@ export default function AppShell({
               <p className="truncate text-[14px] font-medium text-gray-900">{user.fullName}</p>
               <p className="truncate text-[12px] text-muted">{user.email}</p>
             </div>
-          </div>
+          </Link>
           <AppNavSignOut />
         </div>
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <main className="flex-1 overflow-auto">{children}</main>
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
     </div>
   );

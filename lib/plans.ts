@@ -1,7 +1,7 @@
-export type PlanId = 'free' | 'credits' | 'pro';
+export type ProductId = 'single' | 'credits' | 'pro';
 
-export type PlanDefinition = {
-  id: PlanId;
+export type ProductDefinition = {
+  id: ProductId;
   name: string;
   price: string;
   period: string;
@@ -11,28 +11,35 @@ export type PlanDefinition = {
   includesNegotiationEmail: boolean;
 };
 
-export const PLANS: PlanDefinition[] = [
+/** Purchasable options shown on landing & billing */
+export const PRODUCTS: ProductDefinition[] = [
   {
-    id: 'free',
-    name: 'Free',
-    price: '€0',
-    period: '',
-    features: ['1 contract review', 'Plain-English summary', 'Risk score'],
-    cta: 'Current plan',
+    id: 'single',
+    name: 'Pay per contract',
+    price: '€3',
+    period: 'per contract',
+    features: [
+      'One full contract review',
+      'Plain-English summary & risk score',
+      'Negotiation email generator',
+      'No subscription',
+    ],
+    cta: 'Buy one review',
     accent: false,
-    includesNegotiationEmail: false,
+    includesNegotiationEmail: true,
   },
   {
     id: 'credits',
-    name: 'Credits',
+    name: '3-pack',
     price: '€9',
     period: 'one-time',
     features: [
-      '3 contract reviews',
-      'Everything in Free',
-      'Negotiation email generator',
+      '3 contract reviews (€3 each)',
+      'Everything in single review',
+      'Credits never expire',
+      'No subscription',
     ],
-    cta: 'Buy credits',
+    cta: 'Buy 3-pack',
     accent: true,
     includesNegotiationEmail: true,
   },
@@ -42,10 +49,10 @@ export const PLANS: PlanDefinition[] = [
     price: '€19',
     period: '/ month',
     features: [
-      'Unlimited reviews',
-      'Everything in Credits',
+      'Unlimited contract reviews',
       'Contract history dashboard',
       'Priority analysis',
+      'Negotiation email generator',
     ],
     cta: 'Start Pro',
     accent: false,
@@ -53,6 +60,22 @@ export const PLANS: PlanDefinition[] = [
   },
 ];
 
-export function getPlanDefinition(id: PlanId): PlanDefinition {
-  return PLANS.find((p) => p.id === id) ?? PLANS[0];
+export const LANDING_PLANS = PRODUCTS.map((product) => ({
+  ...product,
+  href: '/login',
+}));
+
+export function getProduct(id: ProductId): ProductDefinition {
+  return PRODUCTS.find((p) => p.id === id) ?? PRODUCTS[0];
+}
+
+/** @deprecated use ProductId */
+export type PlanId = ProductId;
+
+/** @deprecated use PRODUCTS */
+export const PLANS = PRODUCTS;
+
+/** @deprecated use getProduct */
+export function getPlanDefinition(id: ProductId): ProductDefinition {
+  return getProduct(id);
 }

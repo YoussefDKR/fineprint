@@ -31,6 +31,7 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
     <AppShell
       user={appUser!}
       plan={appUser!.plan}
+      creditBalance={appUser!.creditBalance}
       hasNegotiationAccess={appUser!.hasNegotiationAccess}
       activeNav="contracts"
     >
@@ -39,6 +40,7 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
           <ReviewClient
             existingContract={existingContract}
             hasNegotiationAccess={appUser!.hasNegotiationAccess}
+            canReview={appUser!.canReview}
           />
         </Suspense>
       </main>

@@ -21,6 +21,7 @@ export default async function ContractsPage() {
     <AppShell
       user={appUser!}
       plan={appUser!.plan}
+      creditBalance={appUser!.creditBalance}
       hasNegotiationAccess={appUser!.hasNegotiationAccess}
       activeNav="contracts"
     >

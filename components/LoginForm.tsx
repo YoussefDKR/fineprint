@@ -63,7 +63,7 @@ export default function LoginForm() {
         <p className="mt-2 text-[16px] text-muted">
           {mode === 'login'
             ? 'Log in to review your contracts'
-            : 'Start reviewing contracts for free'}
+            : 'Create an account to review contracts'}
         </p>
       </div>
 

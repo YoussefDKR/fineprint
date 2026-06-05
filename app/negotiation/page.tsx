@@ -24,6 +24,7 @@ export default async function NegotiationPage() {
     <AppShell
       user={appUser!}
       plan={appUser!.plan}
+      creditBalance={appUser!.creditBalance}
       hasNegotiationAccess={appUser!.hasNegotiationAccess}
       activeNav="negotiation"
     >

@@ -21,11 +21,13 @@ const LOADING_STEP_EMAIL = 'Writing your negotiation email…';
 type ReviewClientProps = {
   existingContract?: Contract | null;
   hasNegotiationAccess: boolean;
+  canReview: boolean;
 };
 
 export default function ReviewClient({
   existingContract,
   hasNegotiationAccess,
+  canReview,
 }: ReviewClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -103,7 +105,17 @@ export default function ReviewClient({
         subtitle="Upload a client contract PDF for instant analysis"
       />
 
-      {!showResults && !loading && (
+      {!showResults && !loading && !canReview && (
+        <div className="card mb-6 p-6">
+          <p className="mb-2 text-[17px] font-semibold text-gray-900">No review credits</p>
+          <p className="mb-4 text-[15px] text-muted">
+            Buy a review for €3 or a 3-pack for €9. Credits never expire.
+          </p>
+          <ButtonPrimary href="/billing">Go to billing</ButtonPrimary>
+        </div>
+      )}
+
+      {!showResults && !loading && canReview && (
         <UploadZone onUpload={handleUpload} disabled={loading} />
       )}
 
@@ -129,6 +141,11 @@ export default function ReviewClient({
       {error && (
         <div className="card mt-4 border-[#E24B4A] bg-[#FCEBEB] p-5 text-[15px] text-[#A32D2D]">
           {error}
+          {error.includes('billing') && (
+            <ButtonPrimary href="/billing" className="mt-4 text-[14px]">
+              Buy reviews
+            </ButtonPrimary>
+          )}
           <button
             onClick={() => setError(null)}
             className="ml-3 font-medium underline"

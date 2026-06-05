@@ -26,5 +26,6 @@ export type Contract = {
   summary: string | null;
   clauses: Clause[] | null;
   negotiation_email: string | null;
+  credit_consumed?: boolean;
   created_at: string;
 };

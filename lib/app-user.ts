@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
-import { getUserPlan, hasNegotiationAccess, type UserPlan } from '@/lib/plan';
+import { getUserBillingForSession } from '@/lib/credits';
+import type { UserPlan } from '@/lib/plan';
 
 export type AppUser = {
   id: string;
@@ -7,6 +8,8 @@ export type AppUser = {
   fullName: string;
   avatarUrl: string | null;
   plan: UserPlan;
+  creditBalance: number;
+  canReview: boolean;
   hasNegotiationAccess: boolean;
 };
 
@@ -18,7 +21,7 @@ export async function getAppUser(): Promise<AppUser | null> {
 
   if (!user) return null;
 
-  const plan = getUserPlan(user);
+  const billing = await getUserBillingForSession(user.id);
 
   return {
     id: user.id,
@@ -29,7 +32,9 @@ export async function getAppUser(): Promise<AppUser | null> {
       user.email?.split('@')[0] ||
       'there',
     avatarUrl: (user.user_metadata?.avatar_url as string) || null,
-    plan,
-    hasNegotiationAccess: hasNegotiationAccess(plan),
+    plan: billing.userPlan,
+    creditBalance: billing.creditBalance,
+    canReview: billing.canReview,
+    hasNegotiationAccess: billing.hasNegotiationAccess,
   };
 }

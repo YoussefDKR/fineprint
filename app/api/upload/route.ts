@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { extractTextFromPdf } from '@/lib/pdf';
+import { getUserBilling, NO_CREDITS_ERROR } from '@/lib/credits';
 import { randomUUID } from 'crypto';
 
 export async function POST(request: Request) {
@@ -14,13 +15,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const billing = await getUserBilling(user.id);
+    if (!billing.canReview) {
+      return NextResponse.json(
+        { error: NO_CREDITS_ERROR, code: 'NO_CREDITS' },
+        { status: 402 },
+      );
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
     if (!file || file.type !== 'application/pdf') {
       return NextResponse.json(
         { error: 'A valid PDF file is required' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -39,10 +48,7 @@ export async function POST(request: Request) {
 
     if (uploadError) {
       console.error('Storage upload error:', uploadError);
-      return NextResponse.json(
-        { error: 'Failed to upload file' },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
     }
 
     const { data: contract, error: dbError } = await supabase
@@ -53,6 +59,7 @@ export async function POST(request: Request) {
         file_name: file.name,
         file_url: storagePath,
         status: 'pending',
+        credit_consumed: false,
       })
       .select()
       .single();
@@ -62,7 +69,7 @@ export async function POST(request: Request) {
       await supabase.storage.from('contracts').remove([storagePath]);
       return NextResponse.json(
         { error: 'Failed to create contract record' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -72,8 +79,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error('Upload error:', error);
-    const message =
-      error instanceof Error ? error.message : 'Upload failed';
+    const message = error instanceof Error ? error.message : 'Upload failed';
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

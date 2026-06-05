@@ -17,6 +17,7 @@ export default async function DashboardPage() {
     <AppShell
       user={appUser!}
       plan={appUser!.plan}
+      creditBalance={appUser!.creditBalance}
       hasNegotiationAccess={appUser!.hasNegotiationAccess}
       activeNav="dashboard"
     >

@@ -17,6 +17,12 @@ const config: Config = {
         border: '#e8e8e6',
         muted: '#6b7280',
         placeholder: '#2563eb',
+        danger: {
+          DEFAULT: '#DC2626',
+          hover: '#B91C1C',
+          muted: '#FEF2F2',
+          border: '#FECACA',
+        },
       },
       fontFamily: {
         sans: ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
