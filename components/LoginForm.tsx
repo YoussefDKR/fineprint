@@ -10,6 +10,7 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const isSignup = searchParams.get('mode') === 'signup';
   const redirect = searchParams.get('redirect') || '/dashboard';
+  const configError = searchParams.get('error') === 'config';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -112,6 +113,13 @@ export default function LoginForm() {
           />
         </div>
 
+        {configError && (
+          <p className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
+            Supabase is not configured yet. Add your API keys to{' '}
+            <code className="rounded bg-amber-100 px-1">.env.local</code> and
+            restart the dev server.
+          </p>
+        )}
         {error && (
           <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>
         )}
