@@ -1,8 +1,8 @@
 import { type NextRequest } from 'next/server';
-import { updateSession } from '@/lib/supabase/middleware';
+import { handleRequest } from '@/lib/waitlist-guard';
 
 export async function middleware(request: NextRequest) {
-  return updateSession(request);
+  return handleRequest(request);
 }
 
 export const config = {

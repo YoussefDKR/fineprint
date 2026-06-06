@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { Footer } from '@/components/Layout';
 import LandingHeader from '@/components/landing/LandingHeader';
 import ProductPreview from '@/components/landing/ProductPreview';
+import WaitlistModal from '@/components/landing/WaitlistModal';
 import { ClauseCardPreview } from '@/components/ClauseCard';
 import { ButtonPrimary, ButtonGhost } from '@/components/ui/Button';
 import { LANDING_PLANS } from '@/lib/plans';
@@ -122,10 +122,13 @@ function Stars() {
 
 export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
+
+  const openWaitlist = () => setWaitlistOpen(true);
 
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
-      <LandingHeader />
+      <LandingHeader onJoinWaitlist={openWaitlist} />
 
       <main className="flex-1">
         {/* Hero */}
@@ -145,8 +148,8 @@ export default function LandingPage() {
               summaries, risk scores, and negotiation advice.
             </p>
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <ButtonPrimary href="/login" className="px-5 py-2.5 text-[16px]">
-                Review a contract →
+              <ButtonPrimary onClick={openWaitlist} className="px-5 py-2.5 text-[16px]">
+                Join waitlist
               </ButtonPrimary>
               <ButtonGhost href="#how-it-works" className="px-5 py-2.5 text-[16px]">
                 See how it works
@@ -307,8 +310,8 @@ export default function LandingPage() {
                       </li>
                     ))}
                   </ul>
-                  <ButtonPrimary href={plan.href} className="w-full">
-                    {plan.cta}
+                  <ButtonPrimary onClick={openWaitlist} className="w-full">
+                    Join waitlist
                   </ButtonPrimary>
                 </div>
               ))}
@@ -327,16 +330,19 @@ export default function LandingPage() {
           <p className="mx-auto mt-3 max-w-md text-[16px] text-white/80 sm:text-[17px]">
             From €3 per contract. No subscription required.
           </p>
-          <Link
-            href="/login"
+          <button
+            type="button"
+            onClick={openWaitlist}
             className="mt-7 inline-flex items-center justify-center rounded-xl bg-white px-6 py-3 text-[16px] font-medium text-brand transition-colors hover:bg-white/90"
           >
-            Get started →
-          </Link>
+            Join waitlist
+          </button>
         </section>
       </main>
 
       <Footer variant="landing" />
+
+      <WaitlistModal open={waitlistOpen} onClose={() => setWaitlistOpen(false)} />
     </div>
   );
 }
