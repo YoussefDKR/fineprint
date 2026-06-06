@@ -20,7 +20,7 @@ function waitlistOnlyResponse(request: NextRequest) {
 
   if (pathname.startsWith('/api')) {
     return NextResponse.json(
-      { error: 'Fineprint is in private beta. Join the waitlist on our homepage.' },
+      { error: 'YourFineprint is in private beta. Join the waitlist on our homepage.' },
       { status: 503 },
     );
   }

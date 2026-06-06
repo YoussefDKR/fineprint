@@ -67,7 +67,7 @@ const benefits = [
 const testimonials = [
   {
     quote:
-      'Fineprint caught a non-compete clause I would have signed without reading. Saved me from a bad deal.',
+      'YourFineprint caught a non-compete clause I would have signed without reading. Saved me from a bad deal.',
     name: 'Sarah M.',
     role: 'UX Designer',
   },
@@ -87,8 +87,8 @@ const testimonials = [
 
 const faqs = [
   {
-    q: 'Is Fineprint legal advice?',
-    a: 'No. Fineprint is a risk assessment and plain-language translation tool, not a law firm. Always consult a qualified lawyer for important legal decisions.',
+    q: 'Is YourFineprint legal advice?',
+    a: 'No. YourFineprint is a risk assessment and plain-language translation tool, not a law firm. Always consult a qualified lawyer for important legal decisions.',
   },
   {
     q: 'What contracts can I upload?',
@@ -144,7 +144,7 @@ export default function LandingPage() {
               Read every contract like a lawyer.
             </h1>
             <p className="mx-auto mt-5 max-w-[480px] text-[18px] leading-relaxed text-muted sm:text-[20px]">
-              Fineprint analyzes your freelance contracts in seconds — plain English
+              YourFineprint analyzes your freelance contracts in seconds — plain English
               summaries, risk scores, and negotiation advice.
             </p>
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">

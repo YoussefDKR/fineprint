@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { LegalDocument, LegalSection } from '@/components/LegalDocument';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service — Fineprint',
-  description: 'Terms and conditions for using Fineprint.',
+  title: 'Terms of Service — YourFineprint',
+  description: 'Terms and conditions for using YourFineprint.',
 };
 
 export default function TermsPage() {
@@ -12,19 +12,19 @@ export default function TermsPage() {
     <LegalDocument title="Terms of Service" lastUpdated="June 5, 2026">
       <LegalSection heading="Agreement">
         <p>
-          By accessing or using Fineprint, you agree to these Terms of Service. If
+          By accessing or using YourFineprint, you agree to these Terms of Service. If
           you do not agree, do not use the service.
         </p>
       </LegalSection>
 
-      <LegalSection heading="What Fineprint is">
+      <LegalSection heading="What YourFineprint is">
         <p>
-          Fineprint is an AI-powered tool that helps freelancers understand contract
+          YourFineprint is an AI-powered tool that helps freelancers understand contract
           documents through plain-language summaries, risk indicators, and draft
           negotiation emails.
         </p>
         <p>
-          <strong className="text-gray-900">Fineprint is not a law firm and does not
+          <strong className="text-gray-900">YourFineprint is not a law firm and does not
           provide legal advice.</strong> Output from the service is for informational
           purposes only. No attorney-client relationship is created. For important
           legal decisions, consult a qualified lawyer licensed in your jurisdiction.
@@ -34,7 +34,7 @@ export default function TermsPage() {
       <LegalSection heading="Eligibility">
         <p>
           You must be at least 18 years old and able to form a binding contract to
-          use Fineprint. You are responsible for ensuring you have the right to
+          use YourFineprint. You are responsible for ensuring you have the right to
           upload and analyze any document you submit.
         </p>
       </LegalSection>
@@ -52,7 +52,7 @@ export default function TermsPage() {
         <ul className="list-disc space-y-2 pl-5">
           <li>Upload malware, unlawful content, or documents you do not have rights to use</li>
           <li>Attempt to reverse engineer, scrape, or disrupt the service</li>
-          <li>Use Fineprint output as a substitute for professional legal counsel</li>
+          <li>Use YourFineprint output as a substitute for professional legal counsel</li>
           <li>Share account access or resell the service without permission</li>
         </ul>
       </LegalSection>
@@ -89,7 +89,7 @@ export default function TermsPage() {
 
       <LegalSection heading="Availability">
         <p>
-          We strive to keep Fineprint available but do not guarantee uninterrupted
+          We strive to keep YourFineprint available but do not guarantee uninterrupted
           access. We may modify, suspend, or discontinue features with or without
           notice.
         </p>
@@ -97,7 +97,7 @@ export default function TermsPage() {
 
       <LegalSection heading="Disclaimer of warranties">
         <p>
-          Fineprint is provided &quot;as is&quot; and &quot;as available&quot; without
+          YourFineprint is provided &quot;as is&quot; and &quot;as available&quot; without
           warranties of any kind, whether express or implied, including implied
           warranties of merchantability, fitness for a particular purpose, and
           non-infringement.
@@ -106,7 +106,7 @@ export default function TermsPage() {
 
       <LegalSection heading="Limitation of liability">
         <p>
-          To the fullest extent permitted by law, Fineprint and its operators will
+          To the fullest extent permitted by law, YourFineprint and its operators will
           not be liable for any indirect, incidental, special, consequential, or
           punitive damages, or for any loss of profits, data, or business
           opportunities arising from your use of the service. Our total liability for
@@ -117,7 +117,7 @@ export default function TermsPage() {
 
       <LegalSection heading="Termination">
         <p>
-          You may stop using Fineprint at any time. We may suspend or terminate your
+          You may stop using YourFineprint at any time. We may suspend or terminate your
           access if you violate these Terms or if required for security or legal
           reasons.
         </p>
@@ -134,7 +134,7 @@ export default function TermsPage() {
 
       <LegalSection heading="Changes">
         <p>
-          We may update these Terms from time to time. Continued use of Fineprint
+          We may update these Terms from time to time. Continued use of YourFineprint
           after changes take effect constitutes acceptance of the updated Terms.
         </p>
       </LegalSection>

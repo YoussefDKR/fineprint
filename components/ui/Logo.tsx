@@ -15,7 +15,7 @@ export default function Logo({ href = '/', className = '', size = 'default' }: L
   const content = (
     <span className={`inline-flex items-center text-gray-900 ${sizeClasses} ${className}`}>
       <span className={`rounded-full bg-brand ${dotClasses}`} />
-      Fineprint
+      YourFineprint
     </span>
   );
 

@@ -10,7 +10,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Fineprint — AI Legal Copilot for Freelancers',
+  title: 'YourFineprint — AI Legal Copilot for Freelancers',
   description:
     'Understand any freelance contract in 30 seconds. Plain-English summaries, risk scoring, and negotiation emails.',
 };

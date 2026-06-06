@@ -4,8 +4,8 @@ import { Header, Footer } from '@/components/Layout';
 import ContactForm from '@/components/ContactForm';
 
 export const metadata: Metadata = {
-  title: 'Contact — Fineprint',
-  description: 'Get in touch with the Fineprint team.',
+  title: 'Contact — YourFineprint',
+  description: 'Get in touch with the YourFineprint team.',
 };
 
 export default function ContactPage() {

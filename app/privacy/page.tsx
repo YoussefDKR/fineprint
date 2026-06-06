@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { LegalDocument, LegalSection } from '@/components/LegalDocument';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — Fineprint',
-  description: 'How Fineprint collects, uses, and protects your data.',
+  title: 'Privacy Policy — YourFineprint',
+  description: 'How YourFineprint collects, uses, and protects your data.',
 };
 
 export default function PrivacyPage() {
@@ -12,7 +12,7 @@ export default function PrivacyPage() {
     <LegalDocument title="Privacy Policy" lastUpdated="June 5, 2026">
       <LegalSection heading="Overview">
         <p>
-          Fineprint (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) helps freelancers
+          YourFineprint (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) helps freelancers
           understand contract PDFs using AI-powered analysis. This Privacy Policy
           explains what information we collect, how we use it, and the choices you
           have.
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
       <LegalSection heading="Service providers">
         <p>
           We use trusted third-party providers for hosting, authentication, storage,
-          and processing needed to run Fineprint. They may handle your data only as
+          and processing needed to run YourFineprint. They may handle your data only as
           needed to provide those services on our behalf, under contractual
           obligations to protect it.
         </p>
@@ -88,7 +88,7 @@ export default function PrivacyPage() {
 
       <LegalSection heading="Children">
         <p>
-          Fineprint is not intended for users under 18. We do not knowingly collect
+          YourFineprint is not intended for users under 18. We do not knowingly collect
           personal information from children.
         </p>
       </LegalSection>

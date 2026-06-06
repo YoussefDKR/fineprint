@@ -28,7 +28,7 @@ export function Footer({ variant = 'app' }: { variant?: 'landing' | 'app' }) {
             </div>
           </div>
           <p className="text-[15px] text-muted">
-            Fineprint is a risk assessment tool, not a law firm. No
+            YourFineprint is a risk assessment tool, not a law firm. No
             attorney-client relationship is created by using this service.
           </p>
         </div>
@@ -40,7 +40,7 @@ export function Footer({ variant = 'app' }: { variant?: 'landing' | 'app' }) {
     <footer className="border-t border-border bg-canvas py-10">
       <div className="mx-auto max-w-5xl px-6 sm:px-10">
         <p className="text-center text-[15px] leading-relaxed text-muted">
-          Fineprint is a risk assessment and plain-language translation tool,
+          YourFineprint is a risk assessment and plain-language translation tool,
           not a law firm. No attorney-client relationship is created by using
           this service.
         </p>
