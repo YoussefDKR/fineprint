@@ -109,10 +109,7 @@ export default function UploadZone({ onUpload, disabled }: UploadZoneProps) {
         <ButtonPrimary
           type="button"
           disabled={disabled}
-          onClick={(e) => {
-            e.stopPropagation();
-            openFilePicker();
-          }}
+          onClick={() => openFilePicker()}
           className="cursor-pointer px-6 py-3 text-[16px]"
         >
           Choose PDF
