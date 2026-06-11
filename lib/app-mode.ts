@@ -1,2 +1,2 @@
-/** Set to false when Stripe is live and the app is open for sign-up. */
-export const WAITLIST_ONLY = true;
+/** Set to true to block login/app routes and show waitlist-only landing page. */
+export const WAITLIST_ONLY = false;
