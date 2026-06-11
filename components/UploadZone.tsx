@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { ButtonPrimary } from '@/components/ui/Button';
 
 type UploadZoneProps = {
@@ -15,6 +15,7 @@ function formatFileSize(bytes: number) {
 }
 
 export default function UploadZone({ onUpload, disabled }: UploadZoneProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -27,8 +28,14 @@ export default function UploadZone({ onUpload, disabled }: UploadZoneProps) {
       setSelectedFile(file);
       onUpload(file);
     },
-    [onUpload]
+    [onUpload],
   );
+
+  const openFilePicker = useCallback(() => {
+    if (!disabled) {
+      inputRef.current?.click();
+    }
+  }, [disabled]);
 
   const onDrop = useCallback(
     (e: React.DragEvent) => {
@@ -38,12 +45,34 @@ export default function UploadZone({ onUpload, disabled }: UploadZoneProps) {
       const file = e.dataTransfer.files[0];
       if (file) handleFile(file);
     },
-    [disabled, handleFile]
+    [disabled, handleFile],
   );
 
   return (
     <div className="mx-auto max-w-xl">
+      <input
+        ref={inputRef}
+        type="file"
+        accept="application/pdf,.pdf"
+        className="hidden"
+        disabled={disabled}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) handleFile(file);
+          e.target.value = '';
+        }}
+      />
+
       <div
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openFilePicker();
+          }
+        }}
+        onClick={openFilePicker}
         onDragOver={(e) => {
           e.preventDefault();
           if (!disabled) setIsDragging(true);
@@ -54,8 +83,8 @@ export default function UploadZone({ onUpload, disabled }: UploadZoneProps) {
           disabled
             ? 'cursor-not-allowed opacity-60'
             : isDragging
-              ? 'border-brand bg-[#EAF3DE]/30'
-              : 'border-border'
+              ? 'cursor-pointer border-brand bg-[#EAF3DE]/30'
+              : 'cursor-pointer border-border hover:border-brand/50'
         }`}
       >
         <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-brand">
@@ -77,21 +106,17 @@ export default function UploadZone({ onUpload, disabled }: UploadZoneProps) {
           Drop your contract PDF here
         </p>
         <p className="mb-6 text-[16px] text-muted">or click to browse</p>
-        <label className={disabled ? 'pointer-events-none' : ''}>
-          <ButtonPrimary className="cursor-pointer px-6 py-3 text-[16px]">
-            Choose PDF
-          </ButtonPrimary>
-          <input
-            type="file"
-            accept="application/pdf"
-            className="hidden"
-            disabled={disabled}
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) handleFile(file);
-            }}
-          />
-        </label>
+        <ButtonPrimary
+          type="button"
+          disabled={disabled}
+          onClick={(e) => {
+            e.stopPropagation();
+            openFilePicker();
+          }}
+          className="cursor-pointer px-6 py-3 text-[16px]"
+        >
+          Choose PDF
+        </ButtonPrimary>
       </div>
 
       {selectedFile && (
